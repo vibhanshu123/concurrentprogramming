@@ -1,5 +1,9 @@
 package edu.coursera.concurrent;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * Wrapper class for two lock-based concurrent list implementations.
  */
@@ -19,7 +23,7 @@ public final class CoarseLists {
          * TODO Declare a lock for this class to be used in implementing the
          * concurrent add, remove, and contains methods below.
          */
-
+        Lock lock = new ReentrantLock();
         /**
          * Default constructor.
          */
@@ -34,14 +38,15 @@ public final class CoarseLists {
          */
         @Override
         boolean add(final Integer object) {
+        	 try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+           
+            lock.lock();
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
             }
-
             if (object.equals(curr.object)) {
                 return false;
             } else {
@@ -49,6 +54,9 @@ public final class CoarseLists {
                 entry.next = curr;
                 pred.next = entry;
                 return true;
+            }
+            }finally {
+            	 lock.unlock();
             }
         }
 
@@ -59,9 +67,12 @@ public final class CoarseLists {
          */
         @Override
         boolean remove(final Integer object) {
+        	try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+            boolean isRemove = false;
+            
+            lock.lock();
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
@@ -69,9 +80,11 @@ public final class CoarseLists {
 
             if (object.equals(curr.object)) {
                 pred.next = curr.next;
-                return true;
-            } else {
-                return false;
+                isRemove = true;
+            }
+            return isRemove;
+            }finally {
+              lock.unlock();
             }
         }
 
@@ -82,14 +95,19 @@ public final class CoarseLists {
          */
         @Override
         boolean contains(final Integer object) {
+        	try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+            
+            lock.lock();
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
             }
             return object.equals(curr.object);
+            }finally {
+            	lock.unlock();
+            }
         }
     }
 
@@ -109,6 +127,8 @@ public final class CoarseLists {
          * TODO Declare a read-write lock for this class to be used in
          * implementing the concurrent add, remove, and contains methods below.
          */
+    	
+    	    ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         /**
          * Default constructor.
@@ -124,9 +144,11 @@ public final class CoarseLists {
          */
         @Override
         boolean add(final Integer object) {
+        	try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+            
+            	lock.writeLock().lock();;
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
@@ -140,6 +162,9 @@ public final class CoarseLists {
                 pred.next = entry;
                 return true;
             }
+            }finally {
+            	  lock.writeLock().unlock();
+            }
         }
 
         /**
@@ -149,9 +174,12 @@ public final class CoarseLists {
          */
         @Override
         boolean remove(final Integer object) {
+        	try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+            
+            	
+            lock.writeLock().lock();
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
@@ -163,6 +191,9 @@ public final class CoarseLists {
             } else {
                 return false;
             }
+            }finally {
+            	lock.writeLock().unlock();
+            }
         }
 
         /**
@@ -172,14 +203,20 @@ public final class CoarseLists {
          */
         @Override
         boolean contains(final Integer object) {
+        	try {
             Entry pred = this.head;
             Entry curr = pred.next;
-
+            
+            	
+            lock.readLock().lock();
             while (curr.object.compareTo(object) < 0) {
                 pred = curr;
                 curr = curr.next;
             }
             return object.equals(curr.object);
+            }finally {
+            	lock.readLock().unlock();
+            }
         }
     }
 }
