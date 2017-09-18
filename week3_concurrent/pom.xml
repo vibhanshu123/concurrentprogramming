@@ -3,10 +3,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>edu.coursera.concurrent</groupId>
-    <artifactId>week4_concurrent</artifactId>
+    <artifactId>week3_concurrent</artifactId>
     <packaging>jar</packaging>
     <version>0.0</version>
-    <name>week4_concurrent</name>
+    <name>week3_concurrent</name>
 
     <properties>
         <pcdp.version>0.0.4-SNAPSHOT</pcdp.version>
