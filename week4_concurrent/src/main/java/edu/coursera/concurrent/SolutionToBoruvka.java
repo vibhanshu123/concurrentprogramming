@@ -1,5 +1,8 @@
 package edu.coursera.concurrent;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import edu.coursera.concurrent.boruvka.Component;
 
 /**
@@ -13,6 +16,8 @@ public final class SolutionToBoruvka<C extends Component> {
      * The final component the graph collapses down to.
      */
     private C solution = null;
+    
+    public  Lock lock= new ReentrantLock();
 
     /**
      * Provide a solution to the testing code. Single assignment.
